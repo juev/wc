@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -23,19 +24,19 @@ func main() {
 
 func run() error {
 	if len(files) == 0 {
-		c, _ := processFile()
-		fmt.Println("bytes:", c)
+		c, s, l, _ := processFile()
+		fmt.Println(c, s, l)
 	}
 
 	for i := range files {
-		c, _ := processFile(files[i])
-		fmt.Println(c, files[i])
+		c, s, l, _ := processFile(files[i])
+		fmt.Println(c, s, l, files[i])
 	}
 
 	return nil
 }
 
-func processFile(fileName ...string) (count int64, err error) {
+func processFile(fileName ...string) (count, size, lines int64, err error) {
 	file := os.Stdin
 	if len(fileName) != 0 {
 		file, err = os.Open(fileName[0])
@@ -43,15 +44,23 @@ func processFile(fileName ...string) (count int64, err error) {
 			panic(err)
 		}
 	}
+	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanBytes)
-
-	for scanner.Scan() {
+	reader := bufio.NewReader(file)
+	for {
+		r, s, err := reader.ReadRune()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return 0, 0, 0, err
+		}
+		if r == '\n' {
+			lines++
+		}
 		count++
+		size += int64(s)
 	}
 
-	file.Close()
-
-	return count, nil
+	return count, size, lines, nil
 }

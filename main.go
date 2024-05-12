@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 )
@@ -22,13 +23,35 @@ func main() {
 
 func run() error {
 	if len(files) == 0 {
-		fmt.Println("zero args")
+		c, _ := processFile()
+		fmt.Println("bytes:", c)
 	}
 
 	for i := range files {
-		fmt.Println(files[i])
+		c, _ := processFile(files[i])
+		fmt.Println(c, files[i])
 	}
 
-	fmt.Println("Hello world")
 	return nil
+}
+
+func processFile(fileName ...string) (count int64, err error) {
+	file := os.Stdin
+	if len(fileName) != 0 {
+		file, err = os.Open(fileName[0])
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanBytes)
+
+	for scanner.Scan() {
+		count++
+	}
+
+	file.Close()
+
+	return count, nil
 }

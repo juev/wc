@@ -7,6 +7,7 @@ import (
 
 var (
 	bytes, lines, chars, words, help bool
+	files                            []string
 )
 
 func flagParse() {
@@ -37,6 +38,7 @@ func flagParse() {
 	flag.BoolVar(&help, "h", false, "help string")
 
 	flag.Parse()
+	files = flag.Args()
 }
 
 func usage() {

@@ -21,6 +21,14 @@ func main() {
 }
 
 func run() error {
+	if len(files) == 0 {
+		fmt.Println("zero args")
+	}
+
+	for i := range files {
+		fmt.Println(files[i])
+	}
+
 	fmt.Println("Hello world")
 	return nil
 }

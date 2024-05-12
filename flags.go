@@ -35,7 +35,9 @@ func flagParse() {
 		"w",
 		false,
 		`The number of words in each input file is written to the standard output.`)
+
 	flag.BoolVar(&help, "h", false, "help string")
+	flag.BoolVar(&help, "help", false, "help string")
 
 	flag.Parse()
 	files = flag.Args()

@@ -81,7 +81,7 @@ func processFile(fileName ...string) (count, size, lines, words int64, err error
 	}
 	defer file.Close()
 
-	var prev rune
+	var word []rune
 	reader := bufio.NewReader(file)
 	for {
 		r, s, err := reader.ReadRune()
@@ -94,12 +94,17 @@ func processFile(fileName ...string) (count, size, lines, words int64, err error
 		if r == '\n' {
 			lines++
 		}
-		if !unicode.IsSpace(r) && unicode.IsSpace(prev) {
-			words++
-		}
-		prev = r
 		count++
 		size += int64(s)
+
+		if unicode.IsSpace(r) {
+			if len(word) > 0 {
+				words++
+				word = word[:0]
+			}
+			continue
+		}
+		word = append(word, r)
 	}
 
 	return count, size, lines, words, nil

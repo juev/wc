@@ -1,8 +1,9 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+
+	flag "github.com/spf13/pflag"
 )
 
 var (
@@ -11,33 +12,36 @@ var (
 )
 
 func flagParse() {
-	flag.BoolVar(
+	flag.BoolVarP(
 		&bytes,
+		"bytes",
 		"c",
 		false,
 		`The number of bytes in each input file is written to the
 		standard output.`)
 
-	flag.BoolVar(
+	flag.BoolVarP(
 		&lines,
+		"lines",
 		"l",
 		false,
 		`The number of lines in each input file is written to the
 		standard output.`,
 	)
-	flag.BoolVar(
+	flag.BoolVarP(
 		&chars,
+		"chars",
 		"m",
 		false,
 		`The number of characters in each input file is written to the standard output.`)
-	flag.BoolVar(
+	flag.BoolVarP(
 		&words,
+		"words",
 		"w",
 		false,
 		`The number of words in each input file is written to the standard output.`)
 
-	flag.BoolVar(&help, "h", false, "help string")
-	flag.BoolVar(&help, "help", false, "help string")
+	flag.BoolVarP(&help, "help", "h", false, "help string")
 
 	flag.Parse()
 	files = flag.Args()

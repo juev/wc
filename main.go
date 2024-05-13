@@ -41,7 +41,10 @@ func run() error {
 	var FF = make([]ff, 0, len(files))
 	var totalCount, totalSize, totalLines int64
 	for i := range files {
-		c, s, l, _ := processFile(files[i])
+		c, s, l, err := processFile(files[i])
+		if err != nil {
+			return err
+		}
 		FF = append(FF, ff{
 			Count: c,
 			Size:  s,
@@ -54,10 +57,30 @@ func run() error {
 	}
 
 	for i := range FF {
-		fmt.Println(FF[i].Count, FF[i].Size, FF[i].Lines, FF[i].File)
+		if chars {
+			fmt.Print(FF[i].Count, "\t")
+
+		}
+		if bytes {
+			fmt.Print(FF[i].Size, "\t")
+		}
+		if lines {
+			fmt.Print(FF[i].Lines, "\t")
+		}
+		fmt.Println(FF[i].File)
 	}
 	if len(FF) > 1 {
-		fmt.Println(totalCount, totalSize, totalLines)
+		if chars {
+			fmt.Print(totalCount, "\t")
+
+		}
+		if bytes {
+			fmt.Print(totalSize, "\t")
+		}
+		if lines {
+			fmt.Print(totalLines)
+		}
+		fmt.Println()
 	}
 
 	return nil

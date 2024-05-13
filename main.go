@@ -24,13 +24,40 @@ func main() {
 
 func run() error {
 	if len(files) == 0 {
-		c, s, l, _ := processFile()
+		c, s, l, err := processFile()
+		if err != nil {
+			return err
+		}
 		fmt.Println(c, s, l)
+		return nil
 	}
 
+	type ff struct {
+		Count int64
+		Size  int64
+		Lines int64
+		File  string
+	}
+	var FF = make([]ff, 0, len(files))
+	var totalCount, totalSize, totalLines int64
 	for i := range files {
 		c, s, l, _ := processFile(files[i])
-		fmt.Println(c, s, l, files[i])
+		FF = append(FF, ff{
+			Count: c,
+			Size:  s,
+			Lines: l,
+			File:  files[i],
+		})
+		totalCount += c
+		totalSize += s
+		totalLines += l
+	}
+
+	for i := range FF {
+		fmt.Println(FF[i].Count, FF[i].Size, FF[i].Lines, FF[i].File)
+	}
+	if len(FF) > 1 {
+		fmt.Println(totalCount, totalSize, totalLines)
 	}
 
 	return nil
